@@ -125,8 +125,8 @@ def candlestick(date, open, high, low, close):
     ## Personalizando o gráfico
     # Ajustando os ticks dos eixos x ey 
     plt.setp(ax, xticks = ax.get_xticks(), yticks = ax.get_yticks(),
-            xticklabels = [date[i].strftime('%b %Y') for i in ax.get_xticks()],
-            yticklabels= [f'R$ {valor:.2f}' for valor in ax.get_yticks()])
+        xticklabels = [date[i].strftime('%b %Y') for i in ax.get_xticks()],
+        yticklabels= [f'R$ {valor:.2f}' for valor in ax.get_yticks()])
     
     ## trecho de código omitido
 
@@ -134,15 +134,12 @@ def candlestick(date, open, high, low, close):
     ax.set_xlabel('')
     ax.set_ylabel('')
     ax.tick_params (axis='both', labelsize=32)
-    ax.xaxis.set_major_locator (mticker. MaxLocator (4))
+    ax.xaxis.set_major_locator (mticker.MaxNLocator(4))
     sns.despine()
     plt.grid(alpha=0.2)
 
     #Ajustando o limite de y para um respiro 
-    plt.ylim(ax.get_ylim()[0]-0.5, ax.get_ylim()[1] +0.5)
-    
-    #Ajustando o limite de y para um respiro 
-    plt.ylim(ax.get_ylim()[0]-0.5, ax.get_ylim()[1] +0.5)
+    plt.ylim(ax.get_ylim()[0]-0.5, ax.get_ylim()[1]+0.5)
 
 # os dataset são expecíficos para o PowerBi 
 
