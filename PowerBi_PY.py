@@ -4,7 +4,7 @@ import pandas as pd
 
 # Definindo a carteira de ações
 carteira_yf = ['ABEV3.SA', 'B3SA3.SA', 'ELET3.SA', 'GGBR4.SA', 'ITSA4.SA',
-               'PETR4.SA', 'RENT3.SA', 'SUZB3.SA', 'VALE3.SA', 'WEGE3.SA']
+            'PETR4.SA', 'RENT3.SA', 'SUZB3.SA', 'VALE3.SA', 'WEGE3.SA']
 
 df = yf.download(carteira_yf, start="2022-08-01", end="2023-08-01")
 df.head(3)
@@ -53,6 +53,9 @@ cotacoes.info()
 weg = fundamentus.get_papel("WEGE3")
 weg
 
+carteira_fund = ["ABEV3", "B3SA3", "ELET3", "GGBR4", "ITSA4",
+                 "PETR4", "RENT3", "SUZB3", "VALE3", "WEGE3"]
+
 # Lendo um papel específico
 ABEV3 = fundamentus.get_papel("ABEV3")
 B3SA3 = fundamentus.get_papel("B3SA3")
@@ -81,9 +84,43 @@ ind.rename(columns={"index":"Ativo"}, inplace=True)
 colunas = ['Cotacao', 'Min_52_sem', 'Max_52_sem', 'Valor_de_mercado', 'Nro_Acoes', 'Patrim_Liq',
            'Receita_Liquida_12m', 'Receita_Liquida_3m', 'Lucro_Liquido_12m', 'Lucro_Liquido_3m']
 ind[colunas] = ind[colunas].apply(pd.to_numeric, errors='coerce', axis=1)
+
 ind.head()
 
+ind_2 = fundamentus.get_detalhes_raw().reset_index()
+ind_2 = ind_2.query("papel in @carteira_fund")
+
+ind_2 = ind_2[['papel','P/L', 'Div.Yield','P/VP','ROE']].reset_index(drop=True)
+
+ind_2.rename(columns={'papel': 'Ativo','Div.Yield':'DY'}, inplace= True)
+ind_2.head()
 
 
+# o código a seguir para criar um dataframe e remover as linhas duplicadas sempre é executado e age como um preâmbulo para o script:
+
+# dataset = pandas.DataFrame(Date, Open, High, Low, Close)
+# dataset = dataset.drop_duplicates()
+
+# Configurações iniciais de fonte
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams["font.sans-serif"] = 'Verdana'
+
+def candlestick(date, open, high, low, close):
+    fig, ax = plt.subplots(figsize=(30,11), dpi=72, facecolor='#edf3ee')
+    ax.set_facecolor("#edf3ee")
+
+    # Definindo as cores de cada candle
+    cores = ["green" if close > open else "red" for close, open in zip(close, open)]
+
+    # Candlestick corpo + pavio
+    sns.barplot(x=date, y=np.abs(open-close), bottom=np.min((open,close), axis=0), width=0.8, palette=cores, ax = ax)
+    sns.barplot(x=date, y=high-low, bottom=low, width=0.1, palette=cores, ax = ax)
+
+dataset["Date"] = pd.to_datetime(dataset["Date"], format="%Y-%m-%dT%H:%M:%S")
+
+candlestick(dataset["Date"], dataset["Open"], dataset["High"], dataset["Low"], dataset["Close"])
+
+plt.subplots_adjust(left=0.07, bottom=0.05, right=0.95, top=0.95)
+plt.show()
 
 #%%
