@@ -1,6 +1,10 @@
 import yfinance as yf
 import fundamentus
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import seaborn as sns
 
 # Definindo a carteira de ações
 carteira_yf = ['ABEV3.SA', 'B3SA3.SA', 'ELET3.SA', 'GGBR4.SA', 'ITSA4.SA',
@@ -54,7 +58,7 @@ weg = fundamentus.get_papel("WEGE3")
 weg
 
 carteira_fund = ["ABEV3", "B3SA3", "ELET3", "GGBR4", "ITSA4",
-                 "PETR4", "RENT3", "SUZB3", "VALE3", "WEGE3"]
+                "PETR4", "RENT3", "SUZB3", "VALE3", "WEGE3"]
 
 # Lendo um papel específico
 ABEV3 = fundamentus.get_papel("ABEV3")
@@ -82,7 +86,7 @@ ind.rename(columns={"index":"Ativo"}, inplace=True)
 
 # Alterando colunas object para numeric
 colunas = ['Cotacao', 'Min_52_sem', 'Max_52_sem', 'Valor_de_mercado', 'Nro_Acoes', 'Patrim_Liq',
-           'Receita_Liquida_12m', 'Receita_Liquida_3m', 'Lucro_Liquido_12m', 'Lucro_Liquido_3m']
+        'Receita_Liquida_12m', 'Receita_Liquida_3m', 'Lucro_Liquido_12m', 'Lucro_Liquido_3m']
 ind[colunas] = ind[colunas].apply(pd.to_numeric, errors='coerce', axis=1)
 
 ind.head()
@@ -115,13 +119,16 @@ def candlestick(date, open, high, low, close):
     # Candlestick corpo + pavio
     sns.barplot(x=date, y=np.abs(open-close), bottom=np.min((open,close), axis=0), width=0.8, palette=cores, ax = ax)
     sns.barplot(x=date, y=high-low, bottom=low, width=0.1, palette=cores, ax = ax)
-        ## Personalizando o gráfico
+
+    ## código omitido
+
+    ## Personalizando o gráfico
     # Ajustando os ticks dos eixos x ey 
     plt.setp(ax, xticks = ax.get_xticks(), yticks = ax.get_yticks(),
-             xticklabels = [date[i].strftime('%b %Y') for i in ax.get_xticks()],
-             yticklabels= [f'R$ (valor:.2f) for valor in ax.get_yticks()])
+            xticklabels = [date[i].strftime('%b %Y') for i in ax.get_xticks()],
+            yticklabels= [f'R$ {valor:.2f}' for valor in ax.get_yticks()])
     
-    // trecho de código omitido
+    ## trecho de código omitido
 
     # Ajustando tamanhos dos labels, retirando títulos e bordas
     ax.set_xlabel('')
@@ -133,7 +140,11 @@ def candlestick(date, open, high, low, close):
 
     #Ajustando o limite de y para um respiro 
     plt.ylim(ax.get_ylim()[0]-0.5, ax.get_ylim()[1] +0.5)
+    
+    #Ajustando o limite de y para um respiro 
+    plt.ylim(ax.get_ylim()[0]-0.5, ax.get_ylim()[1] +0.5)
 
+# os dataset são expecíficos para o PowerBi 
 
 dataset["Date"] = pd.to_datetime(dataset["Date"], format="%Y-%m-%dT%H:%M:%S")
 
