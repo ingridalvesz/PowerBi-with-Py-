@@ -115,6 +115,25 @@ def candlestick(date, open, high, low, close):
     # Candlestick corpo + pavio
     sns.barplot(x=date, y=np.abs(open-close), bottom=np.min((open,close), axis=0), width=0.8, palette=cores, ax = ax)
     sns.barplot(x=date, y=high-low, bottom=low, width=0.1, palette=cores, ax = ax)
+        ## Personalizando o gráfico
+    # Ajustando os ticks dos eixos x ey 
+    plt.setp(ax, xticks = ax.get_xticks(), yticks = ax.get_yticks(),
+             xticklabels = [date[i].strftime('%b %Y') for i in ax.get_xticks()],
+             yticklabels= [f'R$ (valor:.2f) for valor in ax.get_yticks()])
+    
+    // trecho de código omitido
+
+    # Ajustando tamanhos dos labels, retirando títulos e bordas
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.tick_params (axis='both', labelsize=32)
+    ax.xaxis.set_major_locator (mticker. MaxLocator (4))
+    sns.despine()
+    plt.grid(alpha=0.2)
+
+    #Ajustando o limite de y para um respiro 
+    plt.ylim(ax.get_ylim()[0]-0.5, ax.get_ylim()[1] +0.5)
+
 
 dataset["Date"] = pd.to_datetime(dataset["Date"], format="%Y-%m-%dT%H:%M:%S")
 
